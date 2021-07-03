@@ -56,7 +56,7 @@ for category in ['training', 'test']:
     for emotion_dir in listdir(dataset_path):
         images_path = path.join(dataset_path, emotion_dir)
         training_counter = 1
-        training_num = int(len(listdir(images_path)) * 0.75)
+        training_num = int(len(listdir(images_path)) * 0.80)
         for image_name in listdir(path.join(dataset_path, emotion_dir)):
             image_path = path.join(images_path, image_name)
             image = get_image(image_path)

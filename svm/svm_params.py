@@ -10,9 +10,9 @@ class ImageSizeProps:
 
 class ImageProps:
     IMAGES_PER_EMOTION = -1  # -1 if there is no upper limit
-    IMAGES_PER_EMOTION = IMAGES_PER_EMOTION if IMAGES_PER_EMOTION >= 0 else float('inf')
-    DATASET = 'fer2013'  # 'fer2013' | 'ck+' | 'ck+extracted'
+    DATASET = 'ck+'  # 'fer2013' | 'ck+'
     OUTPUT_FOLDER = path.join(DATASET + '_features' + str(IMAGES_PER_EMOTION if IMAGES_PER_EMOTION >= 0 else ''))
+    IMAGES_PER_EMOTION = IMAGES_PER_EMOTION if IMAGES_PER_EMOTION >= 0 else float('inf')
 
 
 class FeatureExtractionProps:
@@ -21,6 +21,16 @@ class FeatureExtractionProps:
     HOG_WINDOWS_FEATURES = True
 
 
+class TrainingParams:
+    epochs = 10000
+    random_state = 42
+    kernel = 'rbf'
+    gamma = 'auto'
+    decision_function = 'ovr'
+    model_path = 'model.bin'
+
+
 SIZE_PROPS = ImageSizeProps()
 IMAGE_PROPS = ImageProps()
 FEATURE_PROPS = FeatureExtractionProps()
+TRAINING_PROPS = TrainingParams()
