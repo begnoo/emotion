@@ -9,7 +9,7 @@ from time import time
 from skimage.feature import hog
 from svm.svm_params import *
 
-# load dlib predictor
+# load dLib predictor
 predictor = dlib.shape_predictor('shape_predictor_68_face_landmarks.dat')
 # create output folder
 try:
@@ -21,12 +21,12 @@ except OSError as e:
         raise
 
 
-def get_landmarks(img, rects):
-    if len(rects) > 1:
+def get_landmarks(img, rectangles):
+    if len(rectangles) > 1:
         raise BaseException("TooManyFaces")
-    if len(rects) == 0:
+    if len(rectangles) == 0:
         raise BaseException("NoFaces")
-    return np.matrix([[p.x, p.y] for p in predictor(img, rects[0]).parts()])
+    return np.matrix([[p.x, p.y] for p in predictor(img, rectangles[0]).parts()])
 
 
 def get_new_label(label):
@@ -80,12 +80,10 @@ for category in data['usage'].unique():
             else:
                 raise
 
-    # get samples and labels of the actual category
     category_data = data[data['usage'] == category]
     samples = category_data['image'].values
     labels = category_data['emotion'].values
 
-    # get images and extract features
     images = []
     labels_list = []
     landmarks = []
@@ -110,8 +108,8 @@ for category in data['usage'].unique():
                     hog_features.append(features)
                     hog_images.append(hog_image)
                 if FEATURE_PROPS.LANDMARKS:
-                    face_rects = [dlib.rectangle(left=1, top=1, right=47, bottom=47)]
-                    face_landmarks = get_landmarks(image, face_rects)
+                    face_rectangles = [dlib.rectangle(left=1, top=1, right=47, bottom=47)]
+                    face_landmarks = get_landmarks(image, face_rectangles)
                     landmarks.append(face_landmarks)
                 labels_list.append(emotion)
                 num_of_images_per_emotion[emotion] = num_of_images_per_emotion.get(emotion, 0) + 1

@@ -1,5 +1,4 @@
 import time
-import argparse
 import os
 import _pickle as cPickle
 from sklearn.svm import SVC
@@ -69,7 +68,7 @@ def train(epochs=TRAINING_PROPS.epochs, random_state=TRAINING_PROPS.random_state
         print("  - validation accuracy = {0:.1f}".format(validation_accuracy * 100))
         test_accuracy = evaluate(model, test['X'], test['Y'])
         print("  - test accuracy = {0:.1f}".format(test_accuracy * 100))
-        print("  - evalution time = {0:.1f} sec".format(time.time() - start_time))
+        print("  - evaluation time = {0:.1f} sec".format(time.time() - start_time))
         return test_accuracy
 
 
