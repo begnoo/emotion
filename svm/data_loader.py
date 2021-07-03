@@ -1,5 +1,5 @@
 import numpy as np
-from svm.svm_params import *
+from svm_params import *
 from os import path
 
 

@@ -7,7 +7,7 @@ import cv2
 from os import makedirs, listdir
 from time import time
 from skimage.feature import hog
-from svm.svm_params import *
+from svm_params import *
 
 # load dLib predictor
 predictor = dlib.shape_predictor('shape_predictor_68_face_landmarks.dat')

@@ -1,11 +1,12 @@
 import time
 import os
+import argparse
 import _pickle as cPickle
 from sklearn.svm import SVC
 from sklearn.metrics import accuracy_score
 
-from svm.data_loader import load_data
-from svm.svm_params import TRAINING_PROPS, IMAGE_PROPS
+from data_loader import load_data
+from svm_params import TRAINING_PROPS, IMAGE_PROPS
 
 
 def train(epochs=TRAINING_PROPS.epochs, random_state=TRAINING_PROPS.random_state,
@@ -79,4 +80,11 @@ def evaluate(model, x, y):
 
 
 if __name__ == "__main__":
-    train()
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-t", "--train", default="yes")
+    parser.add_argument("-e", "--evaluate", default="no")
+    args = parser.parse_args()
+    if args.train.lower() == "yes":
+        train()
+    if args.evaluate.lower() == "yes":
+        train(train_model=False)
