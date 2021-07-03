@@ -27,7 +27,8 @@ class TrainingParams:
     kernel = 'rbf'
     gamma = 'auto'
     decision_function = 'ovr'
-    model_path = 'model.bin'
+    model_path = ImageProps.DATASET + '_saved_model' + str(
+        '' if ImageProps.IMAGES_PER_EMOTION == float('inf') else ImageProps.IMAGES_PER_EMOTION) + '.bin'
 
 
 SIZE_PROPS = ImageSizeProps()

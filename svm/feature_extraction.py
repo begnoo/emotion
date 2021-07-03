@@ -51,6 +51,7 @@ def get_image(img_path):
 
 print("loading data...")
 data = pd.DataFrame(columns=['emotion', 'image', 'usage'])
+start_time = time()
 for category in ['training', 'test']:
     dataset_path = path.join('../' + IMAGE_PROPS.DATASET, category)
     for emotion_dir in listdir(dataset_path):
@@ -63,6 +64,7 @@ for category in ['training', 'test']:
             usage = 'test' if category == 'test' else 'training' if training_counter < training_num else 'validation'
             training_counter += 1
             data = data.append({'emotion': emotion_dir, 'image': np.asarray(image), 'usage': usage}, ignore_index=True)
+print('elapsed time: {}s'.format(time() - start_time))
 
 num_of_images_per_emotion = {}
 SELECTED_EMOTIONS = data['emotion'].unique()
