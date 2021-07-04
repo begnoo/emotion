@@ -11,7 +11,7 @@ from svm_params import TRAINING_PROPS, IMAGE_PROPS
 
 def train(epochs=TRAINING_PROPS.epochs, random_state=TRAINING_PROPS.random_state,
           kernel=TRAINING_PROPS.kernel, decision_function=TRAINING_PROPS.decision_function, gamma=TRAINING_PROPS.gamma,
-          train_model=True, save_model=True):
+          train_model=True, evaluate_model=False, save_model=True):
     print("loading dataset " + IMAGE_PROPS.DATASET + "...")
     test = {}
     if train_model:
@@ -49,7 +49,7 @@ def train(epochs=TRAINING_PROPS.epochs, random_state=TRAINING_PROPS.random_state
         validation_accuracy = evaluate(model, validation['X'], validation['Y'])
         print("  - validation accuracy = {0:.1f}".format(validation_accuracy * 100))
         return validation_accuracy
-    else:
+    if evaluate_model:
         print("start evaluation...")
         print("loading pretrained model...")
         if path.isfile(TRAINING_PROPS.model_path):
@@ -85,6 +85,13 @@ if __name__ == "__main__":
     parser.add_argument("-e", "--evaluate", default="no")
     args = parser.parse_args()
     if args.train.lower() == "yes":
-        train()
+        train_model = True
+    else:
+        train_model = False
+
     if args.evaluate.lower() == "yes":
-        train(train_model=False)
+        evaluate_model = True
+    else:
+        evaluate_model = False
+
+    train(train_model=train_model, evaluate_model=evaluate_model)

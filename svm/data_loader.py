@@ -14,19 +14,20 @@ def load_data(validation_data=True, test_data=False):
 
     data['X'] = np.load(path.join(train_folder, 'landmarks.npy'))
     data['X'] = np.array([x.flatten() for x in data['X']])
-    data['X'] = np.concatenate((data['X'], np.load(train_folder + '/hog_features.npy')), axis=1)
+    data['X'] = np.concatenate((data['X'], np.load(path.join(train_folder, 'hog_features.npy'))), axis=1)
     data['Y'] = np.load(path.join(train_folder, 'labels.npy'))
 
     if validation_data:
         validation['X'] = np.load(path.join(validation_folder, 'landmarks.npy'))
         validation['X'] = np.array([x.flatten() for x in validation['X']])
-        validation['X'] = np.concatenate((validation['X'], np.load(validation_folder + '/hog_features.npy')), axis=1)
+        validation['X'] = np.concatenate((validation['X'], np.load(path.join(validation_folder, 'hog_features.npy'))),
+                                         axis=1)
         validation['Y'] = np.load(path.join(validation_folder, 'labels.npy'))
 
     if test_data:
         test['X'] = np.load(path.join(test_folder, 'landmarks.npy'))
         test['X'] = np.array([x.flatten() for x in test['X']])
-        test['X'] = np.concatenate((test['X'], np.load(test_folder + '/hog_features.npy')), axis=1)
+        test['X'] = np.concatenate((test['X'], np.load(path.join(test_folder, 'hog_features.npy'))), axis=1)
         test['Y'] = np.load(path.join(test_folder, 'labels.npy'))
 
     if not validation and not test:

@@ -41,9 +41,6 @@ def get_image(img_path):
     return cv2.resize(gray, (SIZE_PROPS.image_width, SIZE_PROPS.image_height))
 
 
-def extract_features():
-    pass
-
 if __name__ == "__main__":
     # create output folder
     try:

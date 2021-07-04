@@ -33,6 +33,7 @@ def predict(svm_model, img):
     features = get_features_from_image(img)
     if not svm_model:
         print("Error: model not loaded")
+    # noinspection PyBroadException
     try:
         return svm_model.predict(features)
     except:
@@ -58,8 +59,9 @@ if __name__ == "__main__":
             roi_gray = cv2.resize(roi_gray, (48, 48))
 
             prediction = predict(model, roi_gray)
+            emotion = prediction[0]
 
-            cv2.putText(current_image, prediction[0], (int(x), int(y)), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
+            cv2.putText(current_image, emotion, (int(x), int(y)), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
 
         resized_img = cv2.resize(current_image, (1000, 700))
         cv2.imshow('Window', resized_img)
