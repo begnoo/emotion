@@ -1,8 +1,9 @@
 import numpy as np
-from cv2.cv2 import CascadeClassifier, imread, IMREAD_GRAYSCALE
+from keras import models
+from keras_preprocessing.image import ImageDataGenerator
 
 FER_TEST_PATH = "../fer2013/test"
-CK_TEST_PATH = "../ck+extracted/test"
+CK_TEST_PATH = "../ck+/test"
 
 fer_labels = ['anger', 'disgust', 'fear', 'happy', 'neutral', 'sad', 'surprise']
 ck_labels = ["anger", "contempt", "disgust", "fear", "happy", "sadness", "surprise"]
@@ -10,6 +11,7 @@ ck_labels = ["anger", "contempt", "disgust", "fear", "happy", "sadness", "surpri
 
 def load(dataset):
     return models.load_model('model_with_' + dataset + '.h5')
+
 
 def predict(image, dataset):
     model = load(dataset)
@@ -21,12 +23,13 @@ def predict(image, dataset):
 
 
 def evaluate(dataset):
-    path = CK_TRAINING_PATH if dataset == "ck" else FER_TRAINING_PATH
+    path = CK_TEST_PATH if dataset == "ck" else FER_TEST_PATH
     test_data = ImageDataGenerator().flow_from_directory(directory=path,
-                                                     target_size=(48, 48),
-                                                     shuffle=True, color_mode='grayscale')
+                                                         target_size=(48, 48),
+                                                         shuffle=True, color_mode='grayscale')
     model = load(dataset)
     model.evaluate(test_data)
 
+
 if __name__ == '__main__':
-    evaluate("ck")
+    evaluate("fer")
