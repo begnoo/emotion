@@ -4,10 +4,17 @@ import dlib
 import argparse
 import numpy as np
 import feature_extraction
-import cnn.predict as prd
 
 from svm_params import TRAINING_PROPS, IMAGE_PROPS
 from os import path
+
+import sys
+import os
+conf_path = os.getcwd()
+sys.path.append(conf_path)
+sys.path.append(os.path.normpath(conf_path + os.sep + os.pardir) + r'\cnn')
+import predict as prd
+
 
 face_haar_cascade = cv2.CascadeClassifier('haarcascade_frontalface_default.xml')
 
