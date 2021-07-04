@@ -1,10 +1,12 @@
 import cv2
 import _pickle as cPickle
 import dlib
+import argparse
 import numpy as np
 import feature_extraction
+import cnn.predict as prd
 
-from svm_params import TRAINING_PROPS
+from svm_params import TRAINING_PROPS, IMAGE_PROPS
 from os import path
 
 face_haar_cascade = cv2.CascadeClassifier('haarcascade_frontalface_default.xml')
@@ -41,6 +43,14 @@ def predict(svm_model, img):
 
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-m", "--method", default="cnn")  # cnn | svm
+    args = parser.parse_args()
+
+    if args.method != 'cnn' and args.method != 'svm':
+        print("Invalid method selected")
+        exit(-1)
+
     model = load_model()
     print("starting camera...")
     cap = cv2.VideoCapture(0)
@@ -58,8 +68,14 @@ if __name__ == "__main__":
             roi_gray = gray_img[y:y + w, x:x + h]  # cropping region of interest (face)
             roi_gray = cv2.resize(roi_gray, (48, 48))
 
-            prediction = predict(model, roi_gray)
-            emotion = prediction[0]
+            if args.method == 'svm':
+                prediction = predict(model, roi_gray)
+                emotion = prediction[0]
+            else:
+                if IMAGE_PROPS.DATASET == 'ck+':
+                    emotion = prd.predict(roi_gray, 'ck')
+                else:
+                    emotion = prd.predict(roi_gray, 'fer')
 
             cv2.putText(current_image, emotion, (int(x), int(y)), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
 

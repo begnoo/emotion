@@ -13,8 +13,16 @@ def load(dataset):
     return models.load_model('model_with_' + dataset + '.h5')
 
 
+def load_recognition(dataset):
+    return models.load_model('../cnn/model_with_' + dataset + '.h5')
+
+
+ck_model = load_recognition('ck')
+fer_model = load_recognition('fer')
+
+
 def predict(image, dataset):
-    model = load(dataset)
+    model = ck_model if dataset == 'ck' else fer_model
     reshaped_image = np.array(image, dtype=np.float32)
     reshaped_image = np.reshape(reshaped_image, (-1, 48, 48, 1))
     prediction_classes = model.predict(reshaped_image)

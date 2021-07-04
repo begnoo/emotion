@@ -10,7 +10,7 @@ class ImageSizeProps:
 
 class ImageProps:
     IMAGES_PER_EMOTION = -1  # -1 if there is no upper limit
-    DATASET = 'ck+'  # 'fer2013' | 'ck+'
+    DATASET = 'fer2013'  # 'fer2013' | 'ck+'
     OUTPUT_FOLDER = path.join(DATASET + '_features' + str(IMAGES_PER_EMOTION if IMAGES_PER_EMOTION >= 0 else ''))
     IMAGES_PER_EMOTION = IMAGES_PER_EMOTION if IMAGES_PER_EMOTION >= 0 else float('inf')
 
