@@ -22,11 +22,11 @@ Pored toga, neophodne su i sledeće biblioteke:
 
 ## Pokretanje
 
-Za treniranje je potrebno skinuti [ck+](https://www.dropbox.com/s/b1nk6ob0vhyjvyu/ck%2B.zip?dl=0) i [fer2013](a) skupove i smestiti ih u glavni folder projekta
+Za treniranje je potrebno skinuti [ck+](https://www.dropbox.com/s/b1nk6ob0vhyjvyu/ck%2B.zip?dl=0) i [fer2013](https://drive.google.com/file/d/1mlmIjFsSZG8SrvmXJDQVwQny7RHswwfX/view?usp=sharing) skupove i smestiti ih u glavni folder projekta
 
 Takođe, potrebno je skinuti 
 - [haarcascade_frontalface_default.xml](https://www.dropbox.com/s/4spo9m48qjvp8lh/haarcascade_frontalface_default.xml?dl=0)
-- [shape_predictor_68_face_landmarks.dat](a)  
+- [shape_predictor_68_face_landmarks.dat](https://github.com/davisking/dlib-models)  
 
 i smestiti u *svm* folder projekta.
 
