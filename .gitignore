@@ -256,4 +256,4 @@ cython_debug/
 /svm/fer2013*
 /svm/shape_predictor_68_face_landmarks.dat
 /svm/*.bin
-svm/haarcascade_frontalface_default.xml
+/svm/haarcascade_frontalface_default.xml
