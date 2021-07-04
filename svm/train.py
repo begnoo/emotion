@@ -1,7 +1,7 @@
 import time
-import os
 import argparse
 import _pickle as cPickle
+from os import path
 from sklearn.svm import SVC
 from sklearn.metrics import accuracy_score
 
@@ -52,7 +52,7 @@ def train(epochs=TRAINING_PROPS.epochs, random_state=TRAINING_PROPS.random_state
     else:
         print("start evaluation...")
         print("loading pretrained model...")
-        if os.path.isfile(TRAINING_PROPS.model_path):
+        if path.isfile(TRAINING_PROPS.model_path):
             with open(TRAINING_PROPS.model_path, 'rb') as f:
                 model = cPickle.load(f)
         else:

@@ -11,14 +11,6 @@ from svm_params import *
 
 # load dLib predictor
 predictor = dlib.shape_predictor('shape_predictor_68_face_landmarks.dat')
-# create output folder
-try:
-    makedirs(IMAGE_PROPS.OUTPUT_FOLDER)
-except OSError as e:
-    if e.errno == errno.EEXIST and path.isdir(IMAGE_PROPS.OUTPUT_FOLDER):
-        pass
-    else:
-        raise
 
 
 def get_landmarks(img, rectangles):
@@ -49,80 +41,94 @@ def get_image(img_path):
     return cv2.resize(gray, (SIZE_PROPS.image_width, SIZE_PROPS.image_height))
 
 
-print("loading data...")
-data = pd.DataFrame(columns=['emotion', 'image', 'usage'])
-start_time = time()
-for category in ['training', 'test']:
-    dataset_path = path.join('../' + IMAGE_PROPS.DATASET, category)
-    for emotion_dir in listdir(dataset_path):
-        images_path = path.join(dataset_path, emotion_dir)
-        training_counter = 1
-        training_num = int(len(listdir(images_path)) * 0.80)
-        for image_name in listdir(path.join(dataset_path, emotion_dir)):
-            image_path = path.join(images_path, image_name)
-            image = get_image(image_path)
-            usage = 'test' if category == 'test' else 'training' if training_counter < training_num else 'validation'
-            training_counter += 1
-            data = data.append({'emotion': emotion_dir, 'image': np.asarray(image), 'usage': usage}, ignore_index=True)
-print('elapsed time: {}s'.format(time() - start_time))
+def extract_features():
+    pass
 
-num_of_images_per_emotion = {}
-SELECTED_EMOTIONS = data['emotion'].unique()
+if __name__ == "__main__":
+    # create output folder
+    try:
+        makedirs(IMAGE_PROPS.OUTPUT_FOLDER)
+    except OSError as e:
+        if e.errno == errno.EEXIST and path.isdir(IMAGE_PROPS.OUTPUT_FOLDER):
+            pass
+        else:
+            raise
 
-for category in data['usage'].unique():
-    print('extracting features from ' + category + '...')
+    print("loading data...")
+    data = pd.DataFrame(columns=['emotion', 'image', 'usage'])
     start_time = time()
-    # create folder
-    if not path.exists(category):
-        try:
-            makedirs(path.join(IMAGE_PROPS.OUTPUT_FOLDER, category))
-        except OSError as e:
-            if e.errno == errno.EEXIST and path.isdir(IMAGE_PROPS.OUTPUT_FOLDER):
-                pass
-            else:
-                raise
-
-    category_data = data[data['usage'] == category]
-    samples = category_data['image'].values
-    labels = category_data['emotion'].values
-
-    images = []
-    labels_list = []
-    landmarks = []
-    hog_features = []
-    hog_images = []
-    for i in range(len(samples)):
-        try:
-            emotion = labels[i]
-            num_of_emotions = num_of_images_per_emotion.get(emotion, 0)
-            if emotion in SELECTED_EMOTIONS and num_of_emotions < IMAGE_PROPS.IMAGES_PER_EMOTION:
-                image = samples[i].reshape((SIZE_PROPS.image_height, SIZE_PROPS.image_width))
-                images.append(image)
-                if FEATURE_PROPS.HOG_WINDOWS_FEATURES:
-                    features = sliding_hog_windows(image)
-                    f, hog_image = hog(image, orientations=8, pixels_per_cell=(16, 16),
-                                       cells_per_block=(1, 1), visualize=True)
-                    hog_features.append(features)
-                    hog_images.append(hog_image)
-                elif FEATURE_PROPS.HOG_FEATURES:
-                    features, hog_image = hog(image, orientations=8, pixels_per_cell=(16, 16),
-                                              cells_per_block=(1, 1), visualize=True)
-                    hog_features.append(features)
-                    hog_images.append(hog_image)
-                if FEATURE_PROPS.LANDMARKS:
-                    face_rectangles = [dlib.rectangle(left=1, top=1, right=47, bottom=47)]
-                    face_landmarks = get_landmarks(image, face_rectangles)
-                    landmarks.append(face_landmarks)
-                labels_list.append(emotion)
-                num_of_images_per_emotion[emotion] = num_of_images_per_emotion.get(emotion, 0) + 1
-        except Exception as e:
-            print("error in image: " + str(i) + " - " + str(e))
+    for category in ['training', 'test']:
+        dataset_path = path.join('../' + IMAGE_PROPS.DATASET, category)
+        for emotion_dir in listdir(dataset_path):
+            images_path = path.join(dataset_path, emotion_dir)
+            training_counter = 1
+            training_num = int(len(listdir(images_path)) * 0.80)
+            for image_name in listdir(path.join(dataset_path, emotion_dir)):
+                image_path = path.join(images_path, image_name)
+                image = get_image(image_path)
+                usage = 'test' if category == 'test' else 'training' if training_counter < training_num else 'validation'
+                training_counter += 1
+                data = data.append({'emotion': emotion_dir, 'image': np.asarray(image), 'usage': usage},
+                                   ignore_index=True)
     print('elapsed time: {}s'.format(time() - start_time))
 
-    np.save(path.join(IMAGE_PROPS.OUTPUT_FOLDER, category, 'images.npy'), images)
-    np.save(path.join(IMAGE_PROPS.OUTPUT_FOLDER, category, 'labels.npy'), labels_list)
-    if FEATURE_PROPS.LANDMARKS:
-        np.save(path.join(IMAGE_PROPS.OUTPUT_FOLDER, category, 'landmarks.npy'), landmarks)
-    if FEATURE_PROPS.HOG_FEATURES or FEATURE_PROPS.HOG_WINDOWS_FEATURES:
-        np.save(path.join(IMAGE_PROPS.OUTPUT_FOLDER, category, 'hog_features.npy'), hog_features)
-        np.save(path.join(IMAGE_PROPS.OUTPUT_FOLDER, category, 'hog_images.npy'), hog_images)
+    num_of_images_per_emotion = {}
+    SELECTED_EMOTIONS = data['emotion'].unique()
+
+    for category in data['usage'].unique():
+        print('extracting features from ' + category + '...')
+        start_time = time()
+        # create folder
+        if not path.exists(category):
+            try:
+                makedirs(path.join(IMAGE_PROPS.OUTPUT_FOLDER, category))
+            except OSError as e:
+                if e.errno == errno.EEXIST and path.isdir(IMAGE_PROPS.OUTPUT_FOLDER):
+                    pass
+                else:
+                    raise
+
+        category_data = data[data['usage'] == category]
+        samples = category_data['image'].values
+        labels = category_data['emotion'].values
+
+        images = []
+        labels_list = []
+        landmarks = []
+        hog_features = []
+        hog_images = []
+        for i in range(len(samples)):
+            try:
+                emotion = labels[i]
+                num_of_emotions = num_of_images_per_emotion.get(emotion, 0)
+                if emotion in SELECTED_EMOTIONS and num_of_emotions < IMAGE_PROPS.IMAGES_PER_EMOTION:
+                    image = samples[i].reshape((SIZE_PROPS.image_height, SIZE_PROPS.image_width))
+                    images.append(image)
+                    if FEATURE_PROPS.HOG_WINDOWS_FEATURES:
+                        features = sliding_hog_windows(image)
+                        f, hog_image = hog(image, orientations=8, pixels_per_cell=(16, 16),
+                                           cells_per_block=(1, 1), visualize=True)
+                        hog_features.append(features)
+                        hog_images.append(hog_image)
+                    elif FEATURE_PROPS.HOG_FEATURES:
+                        features, hog_image = hog(image, orientations=8, pixels_per_cell=(16, 16),
+                                                  cells_per_block=(1, 1), visualize=True)
+                        hog_features.append(features)
+                        hog_images.append(hog_image)
+                    if FEATURE_PROPS.LANDMARKS:
+                        face_rectangles = [dlib.rectangle(left=1, top=1, right=47, bottom=47)]
+                        face_landmarks = get_landmarks(image, face_rectangles)
+                        landmarks.append(face_landmarks)
+                    labels_list.append(emotion)
+                    num_of_images_per_emotion[emotion] = num_of_images_per_emotion.get(emotion, 0) + 1
+            except Exception as e:
+                print("error in image: " + str(i) + " - " + str(e))
+        print('elapsed time: {}s'.format(time() - start_time))
+
+        np.save(path.join(IMAGE_PROPS.OUTPUT_FOLDER, category, 'images.npy'), images)
+        np.save(path.join(IMAGE_PROPS.OUTPUT_FOLDER, category, 'labels.npy'), labels_list)
+        if FEATURE_PROPS.LANDMARKS:
+            np.save(path.join(IMAGE_PROPS.OUTPUT_FOLDER, category, 'landmarks.npy'), landmarks)
+        if FEATURE_PROPS.HOG_FEATURES or FEATURE_PROPS.HOG_WINDOWS_FEATURES:
+            np.save(path.join(IMAGE_PROPS.OUTPUT_FOLDER, category, 'hog_features.npy'), hog_features)
+            np.save(path.join(IMAGE_PROPS.OUTPUT_FOLDER, category, 'hog_images.npy'), hog_images)
